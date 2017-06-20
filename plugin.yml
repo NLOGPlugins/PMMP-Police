@@ -1,0 +1,13 @@
+name: Police
+main: nlog\Police\Main
+version: 1.0.0
+author: nlog
+api:
+- 1.0.0
+- 2.0.0
+- 3.0.0-ALPHA5
+
+commands:
+ police:
+  permission: op
+  description: 경찰 관련 명령어
