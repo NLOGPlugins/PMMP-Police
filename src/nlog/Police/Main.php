@@ -57,7 +57,8 @@ class Main extends PluginBase implements Listener{
     	
     	//Config
     	@mkdir($this->getDataFolder(), 0744, true);
-    	$this->police = new Config($this->getDataFolder() . "office.yml", Config::YAML); //Config 생성
+    	$this->police = new Config($this->getDataFolder() . "police.yml", Config::YAML); //Config 생성
+    	$this->cmd = new Config($this->getDataFolder() . "command.yml", Config::YAML);
  	 }
  	 
  	 
@@ -94,6 +95,36 @@ class Main extends PluginBase implements Listener{
  	 	return true;
  	 }
  	 
+ 	 
+ 	 
+ 	 //커맨드 API
+ 	 public function getCmd($cmd) {
+ 	 	/*
+ 	 	 * 커맨드를 Config에서 가져옵니다.
+ 	 	 */
+ 	 	return $this->cmd->getAll(true);
+ 	 }
+ 	 
+ 	 public function isCmd($cmd) {
+ 	 	/*
+ 	 	 * 커맨드가 잇으면 true, 없으면 false를 반환합니다.
+ 	 	 */
+ 	 	return $this->cmd->exists($cmd);
+ 	 }
+ 	 
+ 	 public function setCmd($permission) {
+ 	 	$this->cmd->set($permission, "permission");
+ 	 	$this->cmd->save();
+ 	 	return true;
+ 	 }
+ 	 
+ 	 public function removeCmd($permission) {
+ 	 	$this->cmd->remove($permission, "permission");
+ 	 	$this->cmd->save();
+ 	 }
+ 	 
+ 	 
+ 	 //명령어
  	 public function onCommand(CommandSender $sender,Command $cmd, $label,array $args) {
  	 	
  	 	$msg = "§b§o [ 알림 ] §7/police <add | remove> <Username> \n §b§o[ 알림 ] §7/police list";
@@ -115,7 +146,7 @@ class Main extends PluginBase implements Listener{
  	 			} //닉네임이 없을 때
 				
  	 		$this->setPolice(strtolower($args[1]));
- 	 		$sender->sendMessage("§b§o [ 알림 ] §7".$args[1]."님을 경찰로 설정되었습니다.");
+ 	 		$sender->sendMessage("§b§o [ 알림 ] §7".strtolower($args[1])."님을 경찰로 설정되었습니다.");
 			return true;
  	 		}
 			#-----------------------------------------------------------------------------
@@ -139,13 +170,74 @@ class Main extends PluginBase implements Listener{
  	 			$list = implode(", ", $this->getPolice());
  	 			$sender->sendMessage("§b§o [ 알림 ] §7경찰 목록 : " . $list);
  	 			return true; //리스트
-				
-			}else{
+ 	 		#-----------------------------------------------------------------------------
+ 	 		}else{
 				$sender->sendMessage($msg);
 				return true; //$args[0]이 없을 때
-				
+			#-----------------------------------------------------------------------------
 			}
  	 	}
+ 	 	
+ 	 	#-----------------------------------------------------------------------------
+ 	 	#-----------------------------------------------------------------------------
+ 	 	$msg = "§b§o [ 알림 ] §7/policecmd <add | remove> <command> \n §b§o[ 알림 ] §7/policecmd list";
+ 	 	
+ 	 	if(strtolower($cmd->getName() === "policecmd")) {
+ 	 		if (!($sender->isOp())) {
+ 	 			$sender->sendMessage("§b§o [ 알림 ] §7권한이 없습니다.");
+ 	 			return true; //OP 가 아닐 때 - 안전빵으로 한번 더ㅋㅋ
+ 	 		}
+ 	 		if (!(isset($args[0]))) {
+ 	 			$sender->sendMessage($msg);
+ 	 			return true;
+ 	 		}
+ 	 		#-----------------------------------------------------------------------------
+ 	 		if ($args[0] === "add") {
+ 	 			if (!(isset($args[1]))) {
+ 	 				$sender->sendMessage($msg);
+ 	 				return true;
+ 	 			} //닉네임이 없을 때
+ 	 			
+ 	 			if ($this->getServer()->getCommandMap()->getCommand(strtolower($args[1])) === null) {
+ 	 				$sender->sendMessage("§b§o [ 알림 ] §7명령어가 존재하지 않습니다.");
+ 	 				return true;
+ 	 			}
+ 	 			
+ 	 			$permission = $this->getServer()->getCommandMap()->getCommand(strtolower($args[1]))->getPermission();
+ 	 	
+ 	 			$this->setCmd($permission);
+ 	 			$sender->sendMessage("§b§o [ 알림 ] §7명령어 '".strtolower($args[1])."'는 경찰이 사용할 수 있습니다.");
+ 	 			return true;
+ 	 		}
+ 	 		#-----------------------------------------------------------------------------
+ 	 		if ($args[0] === "remove") {
+ 	 			if (!(isset($args[1]))) {
+ 	 				$sender->sendMessage($msg);
+ 	 				return true;
+ 	 			} //닉네임이 없을 때
+ 	 	
+ 	 			if (!($this->isCmd(strtolower($args[1])))) {
+ 	 				$sender->sendMessage("§b§o [ 알림 ] §7이 플레이어는 경찰이 아닙니다.");
+ 	 				return true;
+ 	 			} //닉네임이 경찰이 아닐 때
+ 	 	
+ 	 			$this->removePolice($args[1]);
+ 	 			$sender->sendMessage("§b§o [ 알림 ] §7".$args[1]."님을 경찰에서 제거하였습니다.");
+ 	 			return true;
+ 	 		}
+ 	 		#-----------------------------------------------------------------------------
+ 	 		if ($args[0] === "list") {
+ 	 			$list = implode(", ", $this->getPolice());
+ 	 			$sender->sendMessage("§b§o [ 알림 ] §7경찰 목록 : " . $list);
+ 	 			return true; //리스트
+ 	 			#-----------------------------------------------------------------------------
+ 	 		}else{
+ 	 			$sender->sendMessage($msg);
+ 	 			return true; //$args[0]이 없을 때
+ 	 			#-----------------------------------------------------------------------------
+ 	 		}
+ 	 	}
+ 	 	
  	 }
  	 
  	 public function onJoin (PlayerJoinEvent $ev) {
