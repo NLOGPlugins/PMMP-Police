@@ -20,4 +20,4 @@
 - [ ] Support various language _(English, Korean)_
 
 #### Set a command that the police can use
-- [ ] A command that the police can use _(Testing on __'Custom_Cmd'__ branch)_
+- [ ] A command that the police can use (Testing on <a herf="https://github.com/ParkChanSol/PMMP-Police/tree/Custom_Cmd">'__Custom_Cmd__'</a> branch)
