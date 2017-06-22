@@ -45,7 +45,7 @@ class Main extends PluginBase implements Listener{
  	 public function onEnable(){
     	$this->getServer()->getPluginManager()->registerEvents($this, $this);
     	$this->getLogger()->notice("레오온라인을 위한 경찰 플러그인");
-    	$this->getLogger()->info(TextFormat::AQUA . "Made by NLOG (개발자 블로그 : nlog.kro.kr), With LEO ONLINE");
+    	$this->getLogger()->info(TextFormat::AQUA . "Made by NLOG - 개발자 블로그 : nlog.kro.kr");
 		$this->checkUpdate();
     	/*if (!($this->getServer()->getPluginManager()->getPlugin("SOLOBanMaster") == null)) {
     		$this->getLogger()->critical("SOLOBanMaster 플러그인이 없습니다. 플러그인을 비활성화합니다.");
