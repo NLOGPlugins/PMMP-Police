@@ -15,7 +15,7 @@ use pocketmine\event\player\PlayerCommandPreprocessEvent;
 
 class Main extends PluginBase implements Listener{
 	
-	 public function checkUpdate() {
+	 /*public function checkUpdate() {
 	 	$host = json_decode(Utils::getURL("https://raw.githubusercontent.com/ParkChanSol/PMMP-Police/master/" . $this->getDescription()->getVersion() ), true);
 	 	$new = json_decode(Utils::getURL("https://raw.githubusercontent.com/ParkChanSol/PMMP-Police/master/current"), true);
 	 	
@@ -55,18 +55,13 @@ class Main extends PluginBase implements Listener{
 	 		$this->getPluginLoader()->disablePlugin($this);
 	 		return;
 	 	}
-	 	
-	 	
-	 }
+	 }*/
+	
  	 public function onEnable(){
     	$this->getServer()->getPluginManager()->registerEvents($this, $this);
     	$this->getLogger()->notice("레오온라인을 위한 경찰 플러그인");
     	$this->getLogger()->info(TextFormat::AQUA . "Made by NLOG - 개발자 블로그 : nlog.kro.kr");
-		$this->checkUpdate();
-    	/*if (!($this->getServer()->getPluginManager()->getPlugin("SOLOBanMaster") == null)) {
-    		$this->getLogger()->critical("SOLOBanMaster 플러그인이 없습니다. 플러그인을 비활성화합니다.");
-    		$this->getPluginLoader()->disablePlugin($this);
-    	}*/
+	//$this->checkUpdate();
     	
     	//Config
     	@mkdir($this->getDataFolder(), 0744, true);
