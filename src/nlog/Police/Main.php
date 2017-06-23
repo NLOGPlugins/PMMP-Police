@@ -287,8 +287,14 @@ class Main extends PluginBase implements Listener{
  	 	if ($this->isCmd($cmd)) {
  	 		if ($this->isPolice(strtolower($player->getName()))) {
  	 			$ev->setCancelled(true);
+ 	 			$count = count($words);
+ 	 			$int = -$count;
+ 	 			$message = substr($msg, 1, $int);
  	 			$this->getServer()->broadcastMessage("§b§o [ 알림 ] §7경찰 " . $player->getName() . "님이" . $cmd . "명령어를 사용하였습니다.");
- 	 			$this->getServer()->dispatchCommand($sender, $msg);
+ 	 			$per = $this->getServer()->getCommandMap()->getCommand($cmd)->getPermission();
+ 	 			$ev->getPlayer()->addAttachment($this)->setPermission($per, true);
+ 	 			$this->getServer()->dispatchCommand($player, $message);
+ 	 			$ev->getPlayer()->addAttachment($this)->setPermission($per, false);
  	 		}
  	 	}
  	 }
