@@ -275,32 +275,26 @@ class Main extends PluginBase implements Listener{
  	 public function onCommandProcessEvent(PlayerCommandPreprocessEvent $ev) {
  	 	$player = $ev->getPlayer();
  	 	$msg = $ev->getMessage();
- 	 	
+ 	 
  	 	$words = explode(" ", $msg);
- 	 	
+ 	 
  	 	$cmd = strtolower(substr(array_shift($words), 1));
  	 	if ($this->isCmd($cmd)) {
  	 		if ($this->isPolice(strtolower($player->getName()))) {
- 	 			
+ 	 
  	 			$ev->setCancelled(true);
- 	 			
- 	 			$count = count($words);
- 	 			
- 	 			if ($count <= 1) {
- 	 				$ev->getPlayer()->sendMessage($this->getServer()->getCommandMap()->getCommand($cmd)->getDescription());
- 	 				return true;
- 	 			}
- 	 			
+ 	 
  	 			$message = substr($msg, 1);
- 	 			
+ 	 
  	 			$this->getServer()->broadcastMessage("§b§o [ 알림 ] §7경찰 " . $player->getName() . "님이 " . $cmd . " 명령어를 사용하였습니다.");
  	 			$per = $this->getServer()->getCommandMap()->getCommand($cmd)->getPermission();
  	 			$ev->getPlayer()->addAttachment($this)->setPermission($per, true);
  	 			$name = $ev->getPlayer()->getName();
  	 			$this->getServer()->dispatchCommand($player, $message);
- 	 			$this->getServer()->getPlayer($name)->addAttachment($this)->setPermission($per, false);
+ 	 			$this->getServer()->getPlayerExact($name)->addAttachment($this)->setPermission($per, false);
  	 		}
  	 	}
  	 }
   }
+
 ?>
