@@ -15,53 +15,52 @@ use pocketmine\event\player\PlayerCommandPreprocessEvent;
 
 class Main extends PluginBase implements Listener{
 	
-	 /*public function checkUpdate() {
+	/* public function checkUpdate() {
 	 	$host = json_decode(Utils::getURL("https://raw.githubusercontent.com/ParkChanSol/PMMP-Police/master/" . $this->getDescription()->getVersion() ), true);
 	 	$new = json_decode(Utils::getURL("https://raw.githubusercontent.com/ParkChanSol/PMMP-Police/master/current"), true);
 	 	
 	 	$this->getLogger()->notice("업데이트 확인 중...");
-	 	if(!(isset($new["status"]))) {
+	 	if((!(isset($host["status"]))) or ($host["status"] !== true)) {
 	 		$this->getLogger()->alert("업데이트 호스트에 문제가 있어 확인할 수 없습니다. >> 플러그인을 비활성화합니다.");
 	 		$this->getPluginLoader()->disablePlugin($this);
+			return;
+	 	}
+	 	
+	 	if ($host["beta-available"] === true) {
+	 		$this->getLogger()->notice("베타 버전을 사용할 수 있습니다.");
+			$this->getLogger()->notice("개발자 블로그에서 이용하실 수 있습니다.");
+	 		$this->getLogger()->notice("베타는" . $host["beta"] . "버전입니다.");
 			return;
 	 	}
 		
-		if(!(isset($new["status"]))) {
-	 		$this->getLogger()->alert("업데이트 호스트에 문제가 있어 확인할 수 없습니다. >> 플러그인을 비활성화합니다.");
-	 		$this->getPluginLoader()->disablePlugin($this);
+		if ($this->getDescription()->getVersion() === $new["ver"]) {
+	 		$this->getLogger()->notice("최신 버전입니다.");
 			return;
-	 	}
+		}
 	 	
-	 	if ($new["beta-available"] === true) {
-	 		$this->getLogger()->notice("베타 버전을 사용할 수 있습니다.");
-			$this->getLogger()->notice("개발자 블로그에서 이용하실 수 있습니다.");
-	 		$this->getLogger()->notice("베타는" . $new["beta"] . "버전입니다.");
-			return;
-	 	}
-	 	
-	 	if (!($this->getDescription()->getVersion() === $new["ver"])) {
+	 	if ($host["update-available"] === true) {
 	 		$this->getLogger()->notice($new["ver"] . "이 출시되었습니다.");
 			$this->getLogger()->notice("개발자 블로그에서 새로운 버전을 다운해주세요.  >> 플러그인을 비활성화합니다.");
 	 		$this->getLogger()->notice($host["notice"]);
 	 		$this->getPluginLoader()->disablePlugin($this);
 			return;
-	 	}
-	 	
-	 	if ($this->getDescription()->getVersion() === $new["ver"]) {
-	 		$this->getLogger()->notice("최신 버전입니다.");
-			return;
 	 	}else{
 	 		$this->getLogger()->critical("알 수 없는 오류입니다.  >> 플러그인을 비활성화합니다.");
 	 		$this->getPluginLoader()->disablePlugin($this);
 	 		return;
-	 	}
-	 }*/
-	
+	 	}*/
+	 	
+	 	
+	// }
  	 public function onEnable(){
     	$this->getServer()->getPluginManager()->registerEvents($this, $this);
     	$this->getLogger()->notice("레오온라인을 위한 경찰 플러그인");
-    	$this->getLogger()->info(TextFormat::AQUA . "Made by NLOG - 개발자 블로그 : nlog.kro.kr");
-	//$this->checkUpdate();
+    	$this->getLogger()->info(TextFormat::AQUA . "Made by NLOG (개발자 블로그 : nlog.kro.kr), With LEO ONLINE");
+		//$this->checkUpdate();
+    	/*if (!($this->getServer()->getPluginManager()->getPlugin("SOLOBanMaster") == null)) {
+    		$this->getLogger()->critical("SOLOBanMaster 플러그인이 없습니다. 플러그인을 비활성화합니다.");
+    		$this->getPluginLoader()->disablePlugin($this);
+    	}*/
     	
     	//Config
     	@mkdir($this->getDataFolder(), 0744, true);
@@ -277,19 +276,30 @@ class Main extends PluginBase implements Listener{
  	 public function onCommandProcessEvent(PlayerCommandPreprocessEvent $ev) {
  	 	$player = $ev->getPlayer();
  	 	$msg = $ev->getMessage();
+ 	 	
  	 	$words = explode(" ", $msg);
+ 	 	
  	 	$cmd = strtolower(substr(array_shift($words), 1));
  	 	if ($this->isCmd($cmd)) {
  	 		if ($this->isPolice(strtolower($player->getName()))) {
+ 	 			
  	 			$ev->setCancelled(true);
+ 	 			
  	 			$count = count($words);
- 	 			$int = -$count;
- 	 			$message = substr($msg, 1, $int);
- 	 			$this->getServer()->broadcastMessage("§b§o [ 알림 ] §7경찰 " . $player->getName() . "님이" . $cmd . "명령어를 사용하였습니다.");
+ 	 			
+ 	 			if ($count <= 1) {
+ 	 				$ev->getPlayer()->sendMessage($this->getServer()->getCommandMap()->getCommand($cmd)->getDescription());
+ 	 				return true;
+ 	 			}
+ 	 			
+ 	 			$message = substr($msg, 1);
+ 	 			
+ 	 			$this->getServer()->broadcastMessage("§b§o [ 알림 ] §7경찰 " . $player->getName() . "님이 " . $cmd . " 명령어를 사용하였습니다.");
  	 			$per = $this->getServer()->getCommandMap()->getCommand($cmd)->getPermission();
  	 			$ev->getPlayer()->addAttachment($this)->setPermission($per, true);
+ 	 			$name = $ev->getPlayer()->getName();
  	 			$this->getServer()->dispatchCommand($player, $message);
- 	 			$ev->getPlayer()->addAttachment($this)->setPermission($per, false);
+ 	 			$this->getServer()->getPlayer($name)->addAttachment($this)->setPermission($per, false);
  	 		}
  	 	}
  	 }
