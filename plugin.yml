@@ -12,3 +12,6 @@ commands:
  police:
   permission: op
   description: 경찰 관련 명령어
+ policecmd:
+  permission: op
+  description: 경찰이 사용할 수 있는 명령어 설정
