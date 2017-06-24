@@ -16,17 +16,16 @@ use pocketmine\event\player\PlayerCommandPreprocessEvent;
 class Main extends PluginBase implements Listener{
 	
 	/* public function checkUpdate() {
-	 	$host = json_decode(Utils::getURL("https://raw.githubusercontent.com/ParkChanSol/PMMP-Police/master/" . $this->getDescription()->getVersion() ), true);
 	 	$new = json_decode(Utils::getURL("https://raw.githubusercontent.com/ParkChanSol/PMMP-Police/master/current"), true);
 	 	
 	 	$this->getLogger()->notice("업데이트 확인 중...");
-	 	if((!(isset($host["status"]))) or ($host["status"] !== true)) {
+	 	if((!(isset($new["status"]))) or ($new["status"] !== true)) {
 	 		$this->getLogger()->alert("업데이트 호스트에 문제가 있어 확인할 수 없습니다. >> 플러그인을 비활성화합니다.");
 	 		$this->getPluginLoader()->disablePlugin($this);
 			return;
 	 	}
 	 	
-	 	if ($host["beta-available"] === true) {
+	 	if ($new["beta-available"] === true) {
 	 		$this->getLogger()->notice("베타 버전을 사용할 수 있습니다.");
 			$this->getLogger()->notice("개발자 블로그에서 이용하실 수 있습니다.");
 	 		$this->getLogger()->notice("베타는" . $host["beta"] . "버전입니다.");
@@ -38,7 +37,7 @@ class Main extends PluginBase implements Listener{
 			return;
 		}
 	 	
-	 	if ($host["update-available"] === true) {
+	 	if ($new["update-available"] === true) {
 	 		$this->getLogger()->notice($new["ver"] . "이 출시되었습니다.");
 			$this->getLogger()->notice("개발자 블로그에서 새로운 버전을 다운해주세요.  >> 플러그인을 비활성화합니다.");
 	 		$this->getLogger()->notice($host["notice"]);
